@@ -52,13 +52,6 @@ jobs:
               tar -czf "OpenMyTunnel-${TAG}-linux-x64.tar.gz" -C publish .
             artifact_glob: "OpenMyTunnel-*-linux-x64.tar.gz"
 
-          - rid: osx-x64
-            os: macos-13
-            binary: OpenMyTunnel
-            package_cmd: |
-              tar -czf "OpenMyTunnel-${TAG}-osx-x64.tar.gz" -C publish .
-            artifact_glob: "OpenMyTunnel-*-osx-x64.tar.gz"
-
           - rid: osx-arm64
             os: macos-latest
             binary: OpenMyTunnel
