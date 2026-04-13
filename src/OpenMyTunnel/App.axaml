@@ -1,0 +1,28 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="OpenMyTunnel.App"
+             RequestedThemeVariant="Dark">
+
+    <Application.Styles>
+        <FluentTheme />
+    </Application.Styles>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <Color x:Key="BgPrimary">#1E1E2E</Color>
+            <Color x:Key="BgSurface">#2A2A3E</Color>
+            <Color x:Key="BgInput">#333350</Color>
+            <Color x:Key="AccentColor">#7C6AF7</Color>
+            <Color x:Key="TextPrimary">#E0E0F0</Color>
+            <Color x:Key="TextMuted">#9090A0</Color>
+
+            <SolidColorBrush x:Key="BgPrimaryBrush"  Color="{StaticResource BgPrimary}"  />
+            <SolidColorBrush x:Key="BgSurfaceBrush"  Color="{StaticResource BgSurface}"  />
+            <SolidColorBrush x:Key="BgInputBrush"    Color="{StaticResource BgInput}"    />
+            <SolidColorBrush x:Key="AccentBrush"     Color="{StaticResource AccentColor}"/>
+            <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimary}"/>
+            <SolidColorBrush x:Key="TextMutedBrush"  Color="{StaticResource TextMuted}"  />
+        </ResourceDictionary>
+    </Application.Resources>
+
+</Application>
