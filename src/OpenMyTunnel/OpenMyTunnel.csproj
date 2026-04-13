@@ -20,6 +20,8 @@
     <TrimMode>full</TrimMode>
     <!-- SSH.NET has residual trim warnings; suppressed intentionally -->
     <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
+    <!-- Suppress NU1903 for Tmds.DBus.Protocol until Avalonia upgrades its dep -->
+    <NoWarn>$(NoWarn);NU1903</NoWarn>
 
     <!-- Avalonia compiles all XAML bindings at build time - required for AOT -->
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
@@ -34,8 +36,12 @@
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.3" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
     <PackageReference Include="SSH.NET" Version="2024.2.0" />
-    <!-- Override vulnerable transitive dependency pulled in by Avalonia (GHSA-xrw6-gwf8-vvr9) -->
-    <PackageReference Include="Tmds.DBus.Protocol" Version="0.92.0" />
+    <!--
+      Tmds.DBus.Protocol 0.20.0 (pulled in by Avalonia for Linux DBus support) has a known
+      vulnerability (GHSA-xrw6-gwf8-vvr9). Upgrading to 0.92.0 breaks AOT because Avalonia
+      still references the removed Variant type. Suppress the warning until Avalonia ships a
+      compatible update. This dependency is only active on Linux at runtime.
+    -->
   </ItemGroup>
 
   <ItemGroup>
