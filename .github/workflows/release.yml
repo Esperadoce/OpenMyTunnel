@@ -17,8 +17,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Create GitHub release
+      - name: Create GitHub release (skip if already exists)
         run: |
+          gh release view "${{ github.ref_name }}" 2>/dev/null || \
           gh release create "${{ github.ref_name }}" \
             --title "Release ${{ github.ref_name }}" \
             --generate-notes
