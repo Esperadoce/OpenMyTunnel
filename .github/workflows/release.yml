@@ -40,7 +40,7 @@ jobs:
             os: windows-latest
             binary: OpenMyTunnel.exe
             package_cmd: |
-              Compress-Archive -Path publish\* -DestinationPath artifact.zip
+              Get-ChildItem publish -Exclude *.pdb | Compress-Archive -DestinationPath artifact.zip
               Move-Item artifact.zip "OpenMyTunnel-$env:TAG-win-x64.zip"
             artifact_glob: "OpenMyTunnel-*-win-x64.zip"
 

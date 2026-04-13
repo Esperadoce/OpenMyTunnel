@@ -17,7 +17,8 @@ ssh -D 1080 -N user@host -p 22
 - Config persisted locally - no secrets ever written to disk
 - Start minimised to tray option
 - Cross-platform: Windows, Linux, macOS
-- Single self-contained native binary - no .NET runtime required (AOT compiled)
+- Self-contained, no .NET runtime required (AOT compiled native binary)
+- Windows ships as EXE + 3 Avalonia/Skia native DLLs (all inside the zip)
 
 ## Download
 
@@ -30,6 +31,10 @@ Pre-built binaries are attached to each [GitHub Release](https://github.com/Espe
 | macOS Apple Silicon | `OpenMyTunnel-vX.X.X-osx-arm64.tar.gz` |
 
 Intel Mac users: build from source (see below).
+
+> **Windows note:** the zip contains `OpenMyTunnel.exe` and 3 native DLLs required by
+> Avalonia's Skia renderer (`libSkiaSharp.dll`, `libHarfBuzzSharp.dll`, `av_libglesv2.dll`).
+> Keep all files in the same folder - the EXE will not start without them.
 
 ## Build from source
 
