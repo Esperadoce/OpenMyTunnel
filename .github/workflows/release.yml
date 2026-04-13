@@ -1,0 +1,106 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  # Create the GitHub release before the build matrix starts.
+  create-release:
+    name: Create release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create GitHub release
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --title "Release ${{ github.ref_name }}" \
+            --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Build a native AOT binary for each platform and attach it to the release.
+  build:
+    name: Publish ${{ matrix.rid }}
+    needs: create-release
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rid: win-x64
+            os: windows-latest
+            binary: OpenMyTunnel.exe
+            package_cmd: |
+              Compress-Archive -Path publish\* -DestinationPath artifact.zip
+              Move-Item artifact.zip "OpenMyTunnel-$env:TAG-win-x64.zip"
+            artifact_glob: "OpenMyTunnel-*-win-x64.zip"
+
+          - rid: linux-x64
+            os: ubuntu-latest
+            binary: OpenMyTunnel
+            deps: sudo apt-get install -y clang zlib1g-dev
+            package_cmd: |
+              tar -czf "OpenMyTunnel-${TAG}-linux-x64.tar.gz" -C publish .
+            artifact_glob: "OpenMyTunnel-*-linux-x64.tar.gz"
+
+          - rid: osx-x64
+            os: macos-13
+            binary: OpenMyTunnel
+            package_cmd: |
+              tar -czf "OpenMyTunnel-${TAG}-osx-x64.tar.gz" -C publish .
+            artifact_glob: "OpenMyTunnel-*-osx-x64.tar.gz"
+
+          - rid: osx-arm64
+            os: macos-latest
+            binary: OpenMyTunnel
+            package_cmd: |
+              tar -czf "OpenMyTunnel-${TAG}-osx-arm64.tar.gz" -C publish .
+            artifact_glob: "OpenMyTunnel-*-osx-arm64.tar.gz"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install native dependencies (Linux)
+        if: matrix.deps != ''
+        run: ${{ matrix.deps }}
+
+      - name: Publish (AOT)
+        run: >
+          dotnet publish src/OpenMyTunnel/OpenMyTunnel.csproj
+          -c Release
+          -r ${{ matrix.rid }}
+          --self-contained true
+          -o publish
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          TAG: ${{ github.ref_name }}
+        run: ${{ matrix.package_cmd }}
+
+      - name: Package (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
+        env:
+          TAG: ${{ github.ref_name }}
+        run: ${{ matrix.package_cmd }}
+
+      - name: Upload artifact to release
+        run: gh release upload "${{ github.ref_name }}" ${{ matrix.artifact_glob }} --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
