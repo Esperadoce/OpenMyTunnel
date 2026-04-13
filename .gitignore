@@ -1,0 +1,29 @@
+## .NET
+bin/
+obj/
+publish/
+*.user
+*.suo
+.vs/
+.vscode/
+*.swp
+
+## NuGet
+*.nupkg
+packages/
+.nuget/
+
+## OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+## JetBrains Rider
+.idea/
+*.sln.iml
+
+## Build artifacts
+artifacts/
+
+## Claude Code local memory (never commit)
+.claude/
