@@ -176,11 +176,9 @@
                 <!-- Mode selector -->
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                     <RadioButton Content="Password"
-                                 IsChecked="{Binding IsPasswordMode}"
-                                 GroupName="AuthMode" />
+                                 IsChecked="{Binding IsPasswordMode, Mode=TwoWay}" />
                     <RadioButton Content="SSH Key"
-                                 IsChecked="{Binding IsKeyMode}"
-                                 GroupName="AuthMode" />
+                                 IsChecked="{Binding IsKeyMode, Mode=TwoWay}" />
                 </StackPanel>
 
                 <!-- Password panel -->

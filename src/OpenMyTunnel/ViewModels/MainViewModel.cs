@@ -83,8 +83,17 @@ public sealed partial class MainViewModel : ObservableObject
 
     // ------------------------------------------------------------------ derived
 
-    public bool IsPasswordMode => AuthMode == AuthMode.Password;
-    public bool IsKeyMode      => AuthMode == AuthMode.PrivateKey;
+    public bool IsPasswordMode
+    {
+        get => AuthMode == AuthMode.Password;
+        set { if (value) AuthMode = AuthMode.Password; }
+    }
+
+    public bool IsKeyMode
+    {
+        get => AuthMode == AuthMode.PrivateKey;
+        set { if (value) AuthMode = AuthMode.PrivateKey; }
+    }
 
     public string CommandPreview =>
         $"ssh -D {LocalSocksPort} -N {Username}@{Host} -p {SshPort}";
