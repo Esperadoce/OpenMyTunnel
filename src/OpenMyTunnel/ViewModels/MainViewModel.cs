@@ -1,3 +1,4 @@
+using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Avalonia.Media;
@@ -30,7 +31,12 @@ public sealed partial class MainViewModel : ObservableObject
     private AuthMode _authMode = AuthMode.Password;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(KeyFileName))]
+    [NotifyPropertyChangedFor(nameof(HasKeyFile))]
     private string _keyFilePath = string.Empty;
+
+    public string KeyFileName => Path.GetFileName(KeyFilePath);
+    public bool   HasKeyFile  => !string.IsNullOrEmpty(KeyFilePath);
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CommandPreview))]
@@ -114,6 +120,9 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanDisconnect))]
     private void Disconnect() => _tunnel.Disconnect();
     private bool CanDisconnect() => TunnelStatus == TunnelStatus.Connected;
+
+    [RelayCommand]
+    private void ClearKeyFile() => KeyFilePath = string.Empty;
 
     [RelayCommand]
     private void MinimizeToTray() { /* raised to the view via event */ }

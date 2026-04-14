@@ -98,6 +98,42 @@
             <Setter Property="FontSize"   Value="11" />
         </Style>
 
+        <!-- SSH key file picker zone -->
+        <Style Selector="Button.key-picker">
+            <Setter Property="Background"              Value="#18182A" />
+            <Setter Property="BorderBrush"             Value="#44446A" />
+            <Setter Property="BorderThickness"         Value="1" />
+            <Setter Property="CornerRadius"            Value="8" />
+            <Setter Property="Padding"                 Value="12,10" />
+            <Setter Property="Cursor"                  Value="Hand" />
+            <Setter Property="HorizontalAlignment"     Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+        <Style Selector="Button.key-picker:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#1E1E38" />
+        </Style>
+        <Style Selector="Button.key-picker:pointerover">
+            <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+        </Style>
+        <Style Selector="Button.key-picker:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="#16163A" />
+        </Style>
+
+        <!-- Small clear (x) button inside the picker -->
+        <Style Selector="Button.key-clear">
+            <Setter Property="Background"      Value="Transparent" />
+            <Setter Property="Foreground"      Value="#6B7280" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding"         Value="6,4" />
+            <Setter Property="CornerRadius"    Value="4" />
+            <Setter Property="FontSize"        Value="12" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.key-clear:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#EF444425" />
+            <Setter Property="Foreground" Value="#EF4444" />
+        </Style>
+
     </Window.Styles>
 
     <Grid Margin="16" RowDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto">
@@ -166,17 +202,71 @@
 
                 <!-- SSH Key panel -->
                 <StackPanel IsVisible="{Binding IsKeyMode}" Spacing="8">
-                    <TextBlock Classes="field-label" Text="Private Key File" />
-                    <Grid ColumnDefinitions="*,8,Auto">
-                        <TextBox Grid.Column="0"
-                                 Text="{Binding KeyFilePath}"
-                                 Watermark="/home/user/.ssh/id_rsa" />
-                        <Button Grid.Column="2"
-                                Classes="secondary"
-                                Content="Browse"
-                                Click="OnBrowseKeyFile" />
-                    </Grid>
 
+                    <!-- File picker drop zone -->
+                    <Button Classes="key-picker" Click="OnBrowseKeyFile">
+                        <Grid ColumnDefinitions="44,*,Auto">
+
+                            <!-- Icon: folder when empty, key when filled -->
+                            <Border Grid.Column="0"
+                                    Width="34" Height="34"
+                                    Background="#7C6AF718"
+                                    CornerRadius="8"
+                                    VerticalAlignment="Center">
+                                <Panel>
+                                    <TextBlock Text="&#x1F4C2;"
+                                               FontSize="17"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               IsVisible="{Binding !HasKeyFile}" />
+                                    <TextBlock Text="&#x1F511;"
+                                               FontSize="17"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               IsVisible="{Binding HasKeyFile}" />
+                                </Panel>
+                            </Border>
+
+                            <!-- Text content -->
+                            <StackPanel Grid.Column="1"
+                                        Margin="10,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Spacing="2">
+
+                                <!-- Empty state -->
+                                <TextBlock Text="No key file selected"
+                                           FontWeight="Medium"
+                                           Foreground="{StaticResource TextPrimaryBrush}"
+                                           IsVisible="{Binding !HasKeyFile}" />
+                                <TextBlock Text="Click to browse for your SSH private key"
+                                           FontSize="11"
+                                           Foreground="{StaticResource TextMutedBrush}"
+                                           IsVisible="{Binding !HasKeyFile}" />
+
+                                <!-- Filled state -->
+                                <TextBlock Text="{Binding KeyFileName}"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextPrimaryBrush}"
+                                           IsVisible="{Binding HasKeyFile}" />
+                                <TextBlock Text="{Binding KeyFilePath}"
+                                           FontSize="10"
+                                           Foreground="{StaticResource TextMutedBrush}"
+                                           TextTrimming="CharacterEllipsis"
+                                           IsVisible="{Binding HasKeyFile}" />
+                            </StackPanel>
+
+                            <!-- Clear button (only visible when a file is chosen) -->
+                            <Button Grid.Column="2"
+                                    Classes="key-clear"
+                                    Content="&#x2715;"
+                                    IsVisible="{Binding HasKeyFile}"
+                                    Command="{Binding ClearKeyFileCommand}"
+                                    Margin="8,0,0,0"
+                                    ToolTip.Tip="Remove key file" />
+                        </Grid>
+                    </Button>
+
+                    <!-- Passphrase -->
                     <TextBlock Classes="field-label" Text="Passphrase (optional)" />
                     <TextBox PasswordChar="*"
                              Text="{Binding Passphrase, Mode=TwoWay}"
