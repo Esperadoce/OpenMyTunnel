@@ -5,7 +5,7 @@
         x:DataType="vm:MainViewModel"
         Title="OpenMyTunnel"
         Width="440"
-        MinHeight="580"
+        Height="580"
         CanResize="False"
         Background="{StaticResource BgPrimaryBrush}"
         Foreground="{StaticResource TextPrimaryBrush}"
@@ -136,260 +136,261 @@
 
     </Window.Styles>
 
-    <Grid Margin="16" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,*,Auto,Auto">
+    <!--
+        Two-row layout:
+          Row 0 (*): scrollable config area (grows as needed)
+          Row 1 (Auto): status + actions always pinned to the bottom
+    -->
+    <Grid Margin="16,16,16,16" RowDefinitions="*,Auto">
 
-        <!-- HEADER: title on the left, key icon on the right -->
-        <Grid Grid.Row="0"
-              ColumnDefinitions="*,Auto"
-              Margin="0,0,0,14"
-              VerticalAlignment="Center">
-
-            <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="1">
-                <TextBlock Text="OpenMyTunnel"
-                           FontSize="17"
-                           FontWeight="Bold"
-                           Foreground="{StaticResource TextPrimaryBrush}" />
-                <TextBlock Text="SSH SOCKS5 tunnel manager"
-                           FontSize="10"
-                           Foreground="{StaticResource TextMutedBrush}" />
-            </StackPanel>
-
-            <Border Grid.Column="1"
-                    Width="38" Height="38"
-                    Background="{StaticResource AccentBrush}"
-                    CornerRadius="10"
-                    VerticalAlignment="Center">
-                <Viewbox Width="22" Height="22"
-                         HorizontalAlignment="Center"
-                         VerticalAlignment="Center">
-                    <Path Fill="White"
-                          Data="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" />
-                </Viewbox>
-            </Border>
-
-        </Grid>
-
-        <!-- SERVER section -->
-        <Border Grid.Row="1" Classes="card">
+        <!-- SCROLLABLE CONFIG AREA -->
+        <ScrollViewer Grid.Row="0"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
-                <TextBlock Classes="section-label" Text="SERVER" />
 
-                <Grid ColumnDefinitions="*,10,90" RowDefinitions="Auto,6,Auto,10,Auto,6,Auto">
+                <!-- HEADER: title on the left, key icon on the right -->
+                <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,14" VerticalAlignment="Center">
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Classes="field-label" Text="Host" />
-                    <TextBlock Grid.Row="0" Grid.Column="2" Classes="field-label" Text="SSH Port" />
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="1">
+                        <TextBlock Text="OpenMyTunnel"
+                                   FontSize="17"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource TextPrimaryBrush}" />
+                        <TextBlock Text="SSH SOCKS5 tunnel manager"
+                                   FontSize="10"
+                                   Foreground="{StaticResource TextMutedBrush}" />
+                    </StackPanel>
 
-                    <TextBox Grid.Row="2" Grid.Column="0"
-                             Text="{Binding Host}"
-                             Watermark="192.168.1.1" />
+                    <Border Grid.Column="1"
+                            Width="38" Height="38"
+                            Background="{StaticResource AccentBrush}"
+                            CornerRadius="10"
+                            VerticalAlignment="Center">
+                        <Viewbox Width="22" Height="22"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center">
+                            <Path Fill="White"
+                                  Data="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" />
+                        </Viewbox>
+                    </Border>
 
-                    <NumericUpDown Grid.Row="2" Grid.Column="2"
-                                   Minimum="1" Maximum="65535"
-                                   Value="{Binding SshPort}"
-                                   FormatString="0"
-                                   ShowButtonSpinner="False" />
-
-                    <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
-                               Classes="field-label" Text="Username" />
-
-                    <TextBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3"
-                             Text="{Binding Username}"
-                             Watermark="esperadoce" />
                 </Grid>
-            </StackPanel>
-        </Border>
 
-        <!-- AUTHENTICATION section -->
-        <Border Grid.Row="2" Classes="card">
-            <StackPanel>
-                <TextBlock Classes="section-label" Text="AUTHENTICATION" />
+                <!-- SERVER section -->
+                <Border Classes="card">
+                    <StackPanel>
+                        <TextBlock Classes="section-label" Text="SERVER" />
 
-                <!-- Mode selector -->
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                    <RadioButton Content="Password"
-                                 IsChecked="{Binding IsPasswordMode, Mode=TwoWay}" />
-                    <RadioButton Content="SSH Key"
-                                 IsChecked="{Binding IsKeyMode, Mode=TwoWay}" />
-                </StackPanel>
+                        <Grid ColumnDefinitions="*,10,90" RowDefinitions="Auto,6,Auto,10,Auto,6,Auto">
 
-                <!-- Password panel -->
-                <StackPanel IsVisible="{Binding IsPasswordMode}">
-                    <TextBlock Classes="field-label" Text="Password" />
-                    <Grid ColumnDefinitions="*,8,Auto">
-                        <TextBox Grid.Column="0"
-                                 PasswordChar="*"
-                                 Text="{Binding Password, Mode=TwoWay}"
-                                 Watermark="SSH password" />
-                        <ToggleButton Grid.Column="2"
-                                      x:Name="RevealToggle"
-                                      Padding="8,6"
-                                      CornerRadius="6"
-                                      Background="{StaticResource BgInputBrush}"
-                                      Content="Show" />
-                    </Grid>
-                </StackPanel>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Classes="field-label" Text="Host" />
+                            <TextBlock Grid.Row="0" Grid.Column="2" Classes="field-label" Text="SSH Port" />
 
-                <!-- SSH Key panel -->
-                <StackPanel IsVisible="{Binding IsKeyMode}" Spacing="8">
+                            <TextBox Grid.Row="2" Grid.Column="0"
+                                     Text="{Binding Host}"
+                                     Watermark="192.168.1.1" />
 
-                    <!-- File picker drop zone -->
-                    <Button Classes="key-picker" Click="OnBrowseKeyFile">
-                        <Grid ColumnDefinitions="44,*,Auto">
+                            <NumericUpDown Grid.Row="2" Grid.Column="2"
+                                           Minimum="1" Maximum="65535"
+                                           Value="{Binding SshPort}"
+                                           FormatString="0"
+                                           ShowButtonSpinner="False" />
 
-                            <!-- Icon: folder when empty, key when filled -->
-                            <Border Grid.Column="0"
-                                    Width="34" Height="34"
-                                    Background="#7C6AF718"
-                                    CornerRadius="8"
-                                    VerticalAlignment="Center">
-                                <Panel>
-                                    <TextBlock Text="&#x1F4C2;"
-                                               FontSize="17"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               IsVisible="{Binding !HasKeyFile}" />
-                                    <TextBlock Text="&#x1F511;"
-                                               FontSize="17"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               IsVisible="{Binding HasKeyFile}" />
-                                </Panel>
-                            </Border>
+                            <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
+                                       Classes="field-label" Text="Username" />
 
-                            <!-- Text content -->
-                            <StackPanel Grid.Column="1"
-                                        Margin="10,0,0,0"
-                                        VerticalAlignment="Center"
-                                        Spacing="2">
-
-                                <!-- Empty state -->
-                                <TextBlock Text="No key file selected"
-                                           FontWeight="Medium"
-                                           Foreground="{StaticResource TextPrimaryBrush}"
-                                           IsVisible="{Binding !HasKeyFile}" />
-                                <TextBlock Text="Click to browse for your SSH private key"
-                                           FontSize="11"
-                                           Foreground="{StaticResource TextMutedBrush}"
-                                           IsVisible="{Binding !HasKeyFile}" />
-
-                                <!-- Filled state -->
-                                <TextBlock Text="{Binding KeyFileName}"
-                                           FontWeight="SemiBold"
-                                           Foreground="{StaticResource TextPrimaryBrush}"
-                                           IsVisible="{Binding HasKeyFile}" />
-                                <TextBlock Text="{Binding KeyFilePath}"
-                                           FontSize="10"
-                                           Foreground="{StaticResource TextMutedBrush}"
-                                           TextTrimming="CharacterEllipsis"
-                                           IsVisible="{Binding HasKeyFile}" />
-                            </StackPanel>
-
-                            <!-- Clear button (only visible when a file is chosen) -->
-                            <Button Grid.Column="2"
-                                    Classes="key-clear"
-                                    Content="&#x2715;"
-                                    IsVisible="{Binding HasKeyFile}"
-                                    Command="{Binding ClearKeyFileCommand}"
-                                    Margin="8,0,0,0"
-                                    ToolTip.Tip="Remove key file" />
+                            <TextBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3"
+                                     Text="{Binding Username}"
+                                     Watermark="esperadoce" />
                         </Grid>
-                    </Button>
-
-                    <!-- Passphrase (decrypts the key file) -->
-                    <TextBlock Classes="field-label" Text="Key Passphrase (optional)" />
-                    <TextBox PasswordChar="*"
-                             Text="{Binding Passphrase, Mode=TwoWay}"
-                             Watermark="Leave blank if key is not encrypted" />
-
-                    <!-- Server password (for key + password multi-factor servers) -->
-                    <TextBlock Classes="field-label" Text="Server Password (optional)" />
-                    <TextBox PasswordChar="*"
-                             Text="{Binding Password, Mode=TwoWay}"
-                             Watermark="Required only if server demands key + password" />
-                </StackPanel>
-            </StackPanel>
-        </Border>
-
-        <!-- TUNNEL section -->
-        <Border Grid.Row="3" Classes="card">
-            <StackPanel>
-                <TextBlock Classes="section-label" Text="TUNNEL" />
-                <Grid ColumnDefinitions="Auto,10,120" RowDefinitions="Auto,6,Auto">
-                    <TextBlock Grid.Row="0" Grid.Column="0"
-                               Classes="field-label"
-                               Text="Local SOCKS Port"
-                               VerticalAlignment="Center" />
-                    <NumericUpDown Grid.Row="2" Grid.Column="0"
-                                   Minimum="1024" Maximum="65535"
-                                   Value="{Binding LocalSocksPort}"
-                                   FormatString="0"
-                                   ShowButtonSpinner="False" />
-                </Grid>
-
-                <Border Margin="0,10,0,0"
-                        Background="#18182A"
-                        CornerRadius="5"
-                        Padding="8,6">
-                    <TextBlock Text="{Binding CommandPreview}"
-                               FontFamily="Cascadia Code,Consolas,monospace"
-                               FontSize="11"
-                               Foreground="#7C6AF7"
-                               TextWrapping="Wrap" />
+                    </StackPanel>
                 </Border>
+
+                <!-- AUTHENTICATION section -->
+                <Border Classes="card">
+                    <StackPanel>
+                        <TextBlock Classes="section-label" Text="AUTHENTICATION" />
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <RadioButton Content="Password"
+                                         IsChecked="{Binding IsPasswordMode, Mode=TwoWay}" />
+                            <RadioButton Content="SSH Key"
+                                         IsChecked="{Binding IsKeyMode, Mode=TwoWay}" />
+                        </StackPanel>
+
+                        <!-- Password panel -->
+                        <StackPanel IsVisible="{Binding IsPasswordMode}">
+                            <TextBlock Classes="field-label" Text="Password" />
+                            <Grid ColumnDefinitions="*,8,Auto">
+                                <TextBox Grid.Column="0"
+                                         PasswordChar="*"
+                                         Text="{Binding Password, Mode=TwoWay}"
+                                         Watermark="SSH password" />
+                                <ToggleButton Grid.Column="2"
+                                              x:Name="RevealToggle"
+                                              Padding="8,6"
+                                              CornerRadius="6"
+                                              Background="{StaticResource BgInputBrush}"
+                                              Content="Show" />
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- SSH Key panel -->
+                        <StackPanel IsVisible="{Binding IsKeyMode}" Spacing="8">
+
+                            <Button Classes="key-picker" Click="OnBrowseKeyFile">
+                                <Grid ColumnDefinitions="44,*,Auto">
+
+                                    <Border Grid.Column="0"
+                                            Width="34" Height="34"
+                                            Background="#7C6AF718"
+                                            CornerRadius="8"
+                                            VerticalAlignment="Center">
+                                        <Panel>
+                                            <TextBlock Text="&#x1F4C2;"
+                                                       FontSize="17"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       IsVisible="{Binding !HasKeyFile}" />
+                                            <TextBlock Text="&#x1F511;"
+                                                       FontSize="17"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       IsVisible="{Binding HasKeyFile}" />
+                                        </Panel>
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1"
+                                                Margin="10,0,0,0"
+                                                VerticalAlignment="Center"
+                                                Spacing="2">
+                                        <TextBlock Text="No key file selected"
+                                                   FontWeight="Medium"
+                                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                                   IsVisible="{Binding !HasKeyFile}" />
+                                        <TextBlock Text="Click to browse for your SSH private key"
+                                                   FontSize="11"
+                                                   Foreground="{StaticResource TextMutedBrush}"
+                                                   IsVisible="{Binding !HasKeyFile}" />
+                                        <TextBlock Text="{Binding KeyFileName}"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                                   IsVisible="{Binding HasKeyFile}" />
+                                        <TextBlock Text="{Binding KeyFilePath}"
+                                                   FontSize="10"
+                                                   Foreground="{StaticResource TextMutedBrush}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   IsVisible="{Binding HasKeyFile}" />
+                                    </StackPanel>
+
+                                    <Button Grid.Column="2"
+                                            Classes="key-clear"
+                                            Content="&#x2715;"
+                                            IsVisible="{Binding HasKeyFile}"
+                                            Command="{Binding ClearKeyFileCommand}"
+                                            Margin="8,0,0,0"
+                                            ToolTip.Tip="Remove key file" />
+                                </Grid>
+                            </Button>
+
+                            <TextBlock Classes="field-label" Text="Key Passphrase (optional)" />
+                            <TextBox PasswordChar="*"
+                                     Text="{Binding Passphrase, Mode=TwoWay}"
+                                     Watermark="Leave blank if key is not encrypted" />
+
+                            <TextBlock Classes="field-label" Text="Server Password (optional)" />
+                            <TextBox PasswordChar="*"
+                                     Text="{Binding Password, Mode=TwoWay}"
+                                     Watermark="Required only if server demands key + password" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- TUNNEL section -->
+                <Border Classes="card">
+                    <StackPanel>
+                        <TextBlock Classes="section-label" Text="TUNNEL" />
+                        <Grid ColumnDefinitions="Auto,10,120" RowDefinitions="Auto,6,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0"
+                                       Classes="field-label"
+                                       Text="Local SOCKS Port"
+                                       VerticalAlignment="Center" />
+                            <NumericUpDown Grid.Row="2" Grid.Column="0"
+                                           Minimum="1024" Maximum="65535"
+                                           Value="{Binding LocalSocksPort}"
+                                           FormatString="0"
+                                           ShowButtonSpinner="False" />
+                        </Grid>
+
+                        <Border Margin="0,10,0,0"
+                                Background="#18182A"
+                                CornerRadius="5"
+                                Padding="8,6">
+                            <TextBlock Text="{Binding CommandPreview}"
+                                       FontFamily="Cascadia Code,Consolas,monospace"
+                                       FontSize="11"
+                                       Foreground="#7C6AF7"
+                                       TextWrapping="Wrap" />
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- OPTIONS -->
+                <CheckBox Margin="2,0,0,4"
+                          Content="Start minimised to tray"
+                          IsChecked="{Binding StartMinimised}" />
+
             </StackPanel>
-        </Border>
+        </ScrollViewer>
 
-        <!-- OPTIONS -->
-        <CheckBox Grid.Row="4"
-                  Margin="2,0,0,10"
-                  Content="Start minimised to tray"
-                  IsChecked="{Binding StartMinimised}" />
+        <!-- FIXED BOTTOM: status + error + actions + about -->
+        <StackPanel Grid.Row="1" Margin="0,10,0,0">
 
-        <!-- STATUS -->
-        <StackPanel Grid.Row="5"
-                    Orientation="Horizontal"
-                    Spacing="8"
-                    Margin="2,0,0,14">
-            <Ellipse Width="10" Height="10"
-                     Fill="{Binding StatusBrush}"
-                     VerticalAlignment="Center" />
-            <TextBlock Text="{Binding StatusText}"
-                       VerticalAlignment="Center" />
+            <!-- STATUS -->
+            <StackPanel Orientation="Horizontal"
+                        Spacing="8"
+                        Margin="2,0,0,10">
+                <Ellipse Width="10" Height="10"
+                         Fill="{Binding StatusBrush}"
+                         VerticalAlignment="Center" />
+                <TextBlock Text="{Binding StatusText}"
+                           VerticalAlignment="Center" />
+            </StackPanel>
+
+            <!-- Error message -->
+            <TextBlock Margin="2,0,0,8"
+                       Text="{Binding ErrorMessage}"
+                       Foreground="#EF4444"
+                       FontSize="11"
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+            <!-- ACTIONS -->
+            <Grid ColumnDefinitions="*,10,Auto">
+                <Button Grid.Column="0"
+                        Classes="primary"
+                        Content="{Binding ConnectButtonText}"
+                        Command="{Binding ConnectCommand}"
+                        IsEnabled="{Binding !IsConnecting}"
+                        HorizontalAlignment="Stretch" />
+
+                <Button Grid.Column="2"
+                        Classes="secondary"
+                        Content="Minimize to Tray"
+                        Click="OnMinimizeToTray" />
+            </Grid>
+
+            <!-- ABOUT -->
+            <TextBlock Margin="0,10,0,0"
+                       FontSize="10"
+                       Foreground="{StaticResource TextMutedBrush}"
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center">
+                <Run Text="by " /><Run Text="Esperadoce" Foreground="{StaticResource AccentBrush}" /><Run Text=" (Hicham Bouchikhi) - hicham@bouchikhi.net" />
+            </TextBlock>
+
         </StackPanel>
-
-        <!-- Error message -->
-        <TextBlock Grid.Row="6"
-                   Margin="2,0,0,0"
-                   Text="{Binding ErrorMessage}"
-                   Foreground="#EF4444"
-                   FontSize="11"
-                   TextWrapping="Wrap"
-                   IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-
-        <!-- ACTIONS -->
-        <Grid Grid.Row="7" ColumnDefinitions="*,10,Auto">
-            <Button Grid.Column="0"
-                    Classes="primary"
-                    Content="{Binding ConnectButtonText}"
-                    Command="{Binding ConnectCommand}"
-                    IsEnabled="{Binding !IsConnecting}"
-                    HorizontalAlignment="Stretch" />
-
-            <Button Grid.Column="2"
-                    Classes="secondary"
-                    Content="Minimize to Tray"
-                    Click="OnMinimizeToTray" />
-        </Grid>
-
-        <!-- ABOUT -->
-        <TextBlock Grid.Row="8"
-                   Margin="0,12,0,0"
-                   FontSize="10"
-                   Foreground="{StaticResource TextMutedBrush}"
-                   HorizontalAlignment="Center"
-                   TextAlignment="Center">
-            <Run Text="by " /><Run Text="Esperadoce" Foreground="{StaticResource AccentBrush}" /><Run Text=" (Hicham Bouchikhi) - hicham@bouchikhi.net" />
-        </TextBlock>
 
     </Grid>
 </Window>
