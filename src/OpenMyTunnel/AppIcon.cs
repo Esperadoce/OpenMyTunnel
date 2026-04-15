@@ -6,7 +6,7 @@ using Avalonia.Platform;
 namespace OpenMyTunnel;
 
 // Generates the application window / taskbar icon at runtime.
-// No image file required -- drawn pixel by pixel so AOT compilation stays clean.
+// No image file required. Drawn pixel by pixel so AOT compilation stays clean.
 internal static class AppIcon
 {
     private const int Size = 64;

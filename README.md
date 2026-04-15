@@ -20,10 +20,10 @@ Point your browser or system proxy at `127.0.0.1:1080` (SOCKS5) and you're done.
 - One-click SOCKS5 tunnel via SSH dynamic port forwarding
 - Password and SSH key authentication (supports key + passphrase + server password)
 - System tray icon with colour-coded status (grey / amber / green / red)
-- Settings saved locally -- passwords never written to disk
+- Settings saved locally. Passwords are never written to disk.
 - Start minimised to tray
 - Cross-platform: Windows, Linux, macOS
-- AOT compiled -- no .NET runtime required
+- AOT compiled. No .NET runtime required.
 
 ## Download
 
@@ -50,17 +50,17 @@ cd OpenMyTunnel
 # Development run
 dotnet run --project src/OpenMyTunnel/OpenMyTunnel.csproj
 
-# AOT publish -- Windows
+# AOT publish - Windows
 dotnet publish src/OpenMyTunnel/OpenMyTunnel.csproj -c Release -r win-x64
 
-# AOT publish -- Linux
+# AOT publish - Linux
 sudo apt-get install -y clang zlib1g-dev
 dotnet publish src/OpenMyTunnel/OpenMyTunnel.csproj -c Release -r linux-x64
 
-# AOT publish -- macOS Apple Silicon
+# AOT publish - macOS Apple Silicon
 dotnet publish src/OpenMyTunnel/OpenMyTunnel.csproj -c Release -r osx-arm64
 
-# AOT publish -- macOS Intel
+# AOT publish - macOS Intel
 dotnet publish src/OpenMyTunnel/OpenMyTunnel.csproj -c Release -r osx-x64
 ```
 
@@ -80,7 +80,7 @@ Avalonia UI 11, SSH.NET, CommunityToolkit.Mvvm, .NET 10 AOT.
 
 ## About
 
-Made by **Esperadoce** (Hicham Bouchikhi) -- hicham@bouchikhi.net
+Made by **Esperadoce** (Hicham Bouchikhi) - hicham@bouchikhi.net
 
 ## License
 
