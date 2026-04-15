@@ -1,30 +1,35 @@
 # OpenMyTunnel
 
-A lightweight, cross-platform SSH tunnel manager that creates a SOCKS5 proxy via SSH dynamic
-port forwarding. Configure once, connect with one click, control from the system tray.
+A lightweight SSH SOCKS5 tunnel manager. Configure your server once, click Connect, and the tunnel runs quietly in the system tray.
 
-Equivalent to running:
-
+Equivalent to:
 ```bash
 ssh -D 1080 -N user@host -p 22
 ```
 
+Point your browser or system proxy at `127.0.0.1:1080` (SOCKS5) and you're done.
+
+---
+
+![Screenshot](docs/screenshot.png)
+
+---
+
 ## Features
 
-- One-click SSH SOCKS5 tunnel (dynamic port forwarding)
+- One-click SOCKS5 tunnel via SSH dynamic port forwarding
+- Password and SSH key authentication (supports key + passphrase + server password)
 - System tray icon with colour-coded status (grey / amber / green / red)
-- Password and SSH private key authentication
-- Config persisted locally - no secrets ever written to disk
-- Start minimised to tray option
+- Settings saved locally -- passwords never written to disk
+- Start minimised to tray
 - Cross-platform: Windows, Linux, macOS
-- Self-contained, no .NET runtime required (AOT compiled native binary)
-- Windows ships as EXE + 3 Avalonia/Skia native DLLs (all inside the zip)
+- AOT compiled -- no .NET runtime required
 
 ## Download
 
 Pre-built binaries are attached to each [GitHub Release](https://github.com/Esperadoce/OpenMyTunnel/releases).
 
-| Platform | Archive |
+| Platform | File |
 |---|---|
 | Windows x64 | `OpenMyTunnel-vX.X.X-win-x64.zip` |
 | Linux x64 | `OpenMyTunnel-vX.X.X-linux-x64.tar.gz` |
@@ -32,82 +37,36 @@ Pre-built binaries are attached to each [GitHub Release](https://github.com/Espe
 
 Intel Mac users: build from source (see below).
 
-> **Windows note:** the zip contains `OpenMyTunnel.exe` and 3 native DLLs required by
-> Avalonia's Skia renderer (`libSkiaSharp.dll`, `libHarfBuzzSharp.dll`, `av_libglesv2.dll`).
-> Keep all files in the same folder - the EXE will not start without them.
+> **Windows note:** the zip contains `OpenMyTunnel.exe` and 3 native DLLs required by Avalonia's Skia renderer (`libSkiaSharp.dll`, `libHarfBuzzSharp.dll`, `av_libglesv2.dll`). Keep all files in the same folder.
 
 ## Build from source
 
-### Prerequisites
-
-- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
-- Native C toolchain:
-  - Windows: Visual Studio Build Tools (MSVC)
-  - Linux: `clang` and `zlib1g-dev`
-  - macOS: Xcode Command Line Tools (`xcode-select --install`)
-
-### Clone
+**Prerequisites:** [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) plus a native C toolchain (MSVC on Windows, `clang` + `zlib1g-dev` on Linux, Xcode CLI tools on macOS).
 
 ```bash
 git clone https://github.com/Esperadoce/OpenMyTunnel.git
 cd OpenMyTunnel
-```
 
-### Run in development
-
-```bash
+# Development run
 dotnet run --project src/OpenMyTunnel/OpenMyTunnel.csproj
-```
 
-### Publish a native AOT binary
-
-**Windows (x64)**
-
-```powershell
+# AOT publish -- Windows
 dotnet publish src/OpenMyTunnel/OpenMyTunnel.csproj -c Release -r win-x64
-```
 
-Output: `src/OpenMyTunnel/bin/Release/net10.0/win-x64/publish/OpenMyTunnel.exe`
-
-**Linux (x64)**
-
-```bash
+# AOT publish -- Linux
 sudo apt-get install -y clang zlib1g-dev
 dotnet publish src/OpenMyTunnel/OpenMyTunnel.csproj -c Release -r linux-x64
-```
 
-Output: `src/OpenMyTunnel/bin/Release/net10.0/linux-x64/publish/OpenMyTunnel`
-
-**macOS Apple Silicon (arm64)**
-
-```bash
+# AOT publish -- macOS Apple Silicon
 dotnet publish src/OpenMyTunnel/OpenMyTunnel.csproj -c Release -r osx-arm64
-```
 
-Output: `src/OpenMyTunnel/bin/Release/net10.0/osx-arm64/publish/OpenMyTunnel`
-
-**macOS Intel (x64)**
-
-```bash
+# AOT publish -- macOS Intel
 dotnet publish src/OpenMyTunnel/OpenMyTunnel.csproj -c Release -r osx-x64
 ```
 
-Output: `src/OpenMyTunnel/bin/Release/net10.0/osx-x64/publish/OpenMyTunnel`
-
-## Usage
-
-1. Enter the server **Host** (IP or hostname) and **SSH Port** (default 22)
-2. Enter your **Username**
-3. Choose **Password** or **SSH Key** authentication and fill in the credentials
-4. Set the **Local SOCKS Port** (default 1080)
-5. Click **Connect**
-6. Configure your browser or system proxy to use `127.0.0.1:1080` (SOCKS5)
-7. Click **Minimize to Tray** to keep the tunnel running in the background
-8. Right-click the tray icon to connect, disconnect, or exit
-
 ## Configuration
 
-Non-secret settings are saved automatically to:
+Non-secret settings are saved automatically:
 
 | Platform | Path |
 |---|---|
@@ -115,21 +74,13 @@ Non-secret settings are saved automatically to:
 | Linux | `~/.config/OpenMyTunnel/config.json` |
 | macOS | `~/Library/Application Support/OpenMyTunnel/config.json` |
 
-Passwords and passphrases are never written to disk.
-
 ## Technology
 
-| Component | Library |
-|---|---|
-| UI | Avalonia UI 11 |
-| SSH | SSH.NET |
-| MVVM | CommunityToolkit.Mvvm |
-| Serialisation | System.Text.Json (source generated) |
-| Runtime | .NET 10 (AOT) |
+Avalonia UI 11, SSH.NET, CommunityToolkit.Mvvm, .NET 10 AOT.
 
-## Contributing
+## About
 
-Pull requests are welcome. Please open an issue first for significant changes.
+Made by **Esperadoce** (Hicham Bouchikhi) -- hicham@bouchikhi.net
 
 ## License
 

@@ -43,15 +43,15 @@ public sealed class SshTunnelService : IDisposable
             {
                 ct.ThrowIfCancellationRequested();
 
-                var authMethod = config.AuthMode == AuthMode.PrivateKey
-                    ? BuildKeyAuth(config, passphrase)
-                    : BuildPasswordAuth(config, password);
+                var authMethods = config.AuthMode == AuthMode.PrivateKey
+                    ? BuildKeyAuthMethods(config, passphrase, password)
+                    : new AuthenticationMethod[] { BuildPasswordAuth(config, password) };
 
                 var connInfo = new ConnectionInfo(
                     config.Host,
                     config.SshPort,
                     config.Username,
-                    authMethod)
+                    authMethods)
                 {
                     Timeout = TimeSpan.FromSeconds(20)
                 };
@@ -96,13 +96,20 @@ public sealed class SshTunnelService : IDisposable
     private static AuthenticationMethod BuildPasswordAuth(TunnelConfig config, string password)
         => new PasswordAuthenticationMethod(config.Username, password);
 
-    private static AuthenticationMethod BuildKeyAuth(TunnelConfig config, string passphrase)
+    private static AuthenticationMethod[] BuildKeyAuthMethods(
+        TunnelConfig config, string passphrase, string password)
     {
         var key = string.IsNullOrEmpty(passphrase)
             ? new PrivateKeyFile(config.KeyFilePath)
             : new PrivateKeyFile(config.KeyFilePath, passphrase);
 
-        return new PrivateKeyAuthenticationMethod(config.Username, key);
+        var keyMethod = new PrivateKeyAuthenticationMethod(config.Username, key);
+
+        if (string.IsNullOrEmpty(password))
+            return [keyMethod];
+
+        // Some servers require key + password (multi-factor). SSH.NET tries methods in order.
+        return [keyMethod, new PasswordAuthenticationMethod(config.Username, password)];
     }
 
     private void Cleanup()
