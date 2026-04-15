@@ -410,13 +410,24 @@
             </Grid>
 
             <!-- ABOUT -->
-            <TextBlock Margin="0,10,0,0"
-                       FontSize="10"
-                       Foreground="{StaticResource TextMutedBrush}"
-                       HorizontalAlignment="Center"
-                       TextAlignment="Center">
-                <Run Text="by " /><Run Text="Esperadoce" Foreground="{StaticResource AccentBrush}" /><Run Text=" (Hicham Bouchikhi) - hicham@bouchikhi.net" />
-            </TextBlock>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Margin="0,10,0,0">
+                <TextBlock Text="by "
+                           FontSize="10"
+                           Foreground="{StaticResource TextMutedBrush}"
+                           VerticalAlignment="Center" />
+                <HyperlinkButton Content="Esperadoce"
+                                 NavigateUri="https://github.com/esperadoce"
+                                 FontSize="10"
+                                 Foreground="{StaticResource AccentBrush}"
+                                 Padding="0"
+                                 VerticalAlignment="Center" />
+                <TextBlock Text=" (Hicham Bouchikhi) - hicham@bouchikhi.net"
+                           FontSize="10"
+                           Foreground="{StaticResource TextMutedBrush}"
+                           VerticalAlignment="Center" />
+            </StackPanel>
 
         </StackPanel>
 
