@@ -57,6 +57,7 @@ public sealed partial class MainViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(ConnectButtonText))]
     [NotifyPropertyChangedFor(nameof(IsConnecting))]
     [NotifyPropertyChangedFor(nameof(IsConnected))]
+    [NotifyCanExecuteChangedFor(nameof(ConnectCommand))]
     [NotifyCanExecuteChangedFor(nameof(DisconnectCommand))]
     private TunnelStatus _tunnelStatus = TunnelStatus.Disconnected;
 
@@ -115,19 +116,15 @@ public sealed partial class MainViewModel : ObservableObject
 
     // ------------------------------------------------------------------ commands
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanConnect))]
     private async Task ConnectAsync()
     {
-        if (TunnelStatus == TunnelStatus.Connected)
-        {
-            _tunnel.Disconnect();
-            return;
-        }
-
         var config = BuildConfig();
         ConfigService.Save(config);
         await _tunnel.ConnectAsync(config, Password, Passphrase);
     }
+    private bool CanConnect() =>
+        TunnelStatus == TunnelStatus.Disconnected || TunnelStatus == TunnelStatus.Error;
 
     [RelayCommand(CanExecute = nameof(CanDisconnect))]
     private void Disconnect() => _tunnel.Disconnect();
