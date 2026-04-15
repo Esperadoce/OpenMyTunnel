@@ -13,21 +13,21 @@ public enum TunnelStatus
 
 public sealed class SshTunnelService : IDisposable
 {
-    private SshClient?            _client;
+    private SshClient? _client;
     private ForwardedPortDynamic? _port;
-    private readonly Lock         _gate = new();
+    private readonly Lock _gate = new();
 
     public TunnelStatus Status { get; private set; } = TunnelStatus.Disconnected;
 
     public event EventHandler<TunnelStatus>? StatusChanged;
-    public event EventHandler<string>?       ErrorOccurred;
+    public event EventHandler<string>? ErrorOccurred;
 
     // Connects and starts the SOCKS5 dynamic port forward.
     // Equivalent to: ssh -D localSocksPort -N username@host -p sshPort
     public async Task ConnectAsync(
         TunnelConfig config,
-        string       password,
-        string       passphrase,
+        string password,
+        string passphrase,
         CancellationToken ct = default)
     {
         lock (_gate)
@@ -116,11 +116,11 @@ public sealed class SshTunnelService : IDisposable
     {
         lock (_gate)
         {
-            try { _port?.Stop();         } catch { /* best-effort */ }
-            try { _port?.Dispose();      } catch { }
+            try { _port?.Stop(); } catch { /* best-effort */ }
+            try { _port?.Dispose(); } catch { }
             try { _client?.Disconnect(); } catch { }
-            try { _client?.Dispose();    } catch { }
-            _port   = null;
+            try { _client?.Dispose(); } catch { }
+            _port = null;
             _client = null;
         }
     }

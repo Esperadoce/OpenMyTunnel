@@ -73,8 +73,8 @@ public partial class TrayNotification : Window
 
         var wa = screen.WorkingArea;
         w.Position = new PixelPoint(
-            wa.Right  - (int)(280 * screen.Scaling) - 16,
-            wa.Bottom - (int)( 68 * screen.Scaling) - 16);
+            wa.Right - (int)(280 * screen.Scaling) - 16,
+            wa.Bottom - (int)(68 * screen.Scaling) - 16);
     }
 
     // ------------------------------------------------------------------ helpers
@@ -87,7 +87,7 @@ public partial class TrayNotification : Window
             var psi = new ProcessStartInfo(exe)
             {
                 UseShellExecute = false,
-                CreateNoWindow  = true
+                CreateNoWindow = true
             };
             foreach (var a in args) psi.ArgumentList.Add(a);
             Process.Start(psi);

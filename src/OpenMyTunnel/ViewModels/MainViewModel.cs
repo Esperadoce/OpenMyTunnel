@@ -36,7 +36,7 @@ public sealed partial class MainViewModel : ObservableObject
     private string _keyFilePath = string.Empty;
 
     public string KeyFileName => Path.GetFileName(KeyFilePath);
-    public bool   HasKeyFile  => !string.IsNullOrEmpty(KeyFilePath);
+    public bool HasKeyFile => !string.IsNullOrEmpty(KeyFilePath);
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CommandPreview))]
@@ -46,7 +46,7 @@ public sealed partial class MainViewModel : ObservableObject
     private bool _startMinimised;
 
     // Credentials - held in memory only, never persisted.
-    public string Password   { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
     public string Passphrase { get; set; } = string.Empty;
 
     // ------------------------------------------------------------------ status
@@ -64,26 +64,26 @@ public sealed partial class MainViewModel : ObservableObject
     public string StatusText => TunnelStatus switch
     {
         TunnelStatus.Disconnected => "Disconnected",
-        TunnelStatus.Connecting   => "Connecting...",
-        TunnelStatus.Connected    => "Connected",
-        TunnelStatus.Error        => "Error",
-        _                         => "Unknown"
+        TunnelStatus.Connecting => "Connecting...",
+        TunnelStatus.Connected => "Connected",
+        TunnelStatus.Error => "Error",
+        _ => "Unknown"
     };
 
     public SolidColorBrush StatusBrush => TunnelStatus switch
     {
         TunnelStatus.Disconnected => new SolidColorBrush(Color.Parse("#6B7280")),
-        TunnelStatus.Connecting   => new SolidColorBrush(Color.Parse("#F59E0B")),
-        TunnelStatus.Connected    => new SolidColorBrush(Color.Parse("#10B981")),
-        TunnelStatus.Error        => new SolidColorBrush(Color.Parse("#EF4444")),
-        _                         => new SolidColorBrush(Colors.Gray)
+        TunnelStatus.Connecting => new SolidColorBrush(Color.Parse("#F59E0B")),
+        TunnelStatus.Connected => new SolidColorBrush(Color.Parse("#10B981")),
+        TunnelStatus.Error => new SolidColorBrush(Color.Parse("#EF4444")),
+        _ => new SolidColorBrush(Colors.Gray)
     };
 
     public string ConnectButtonText =>
         TunnelStatus == TunnelStatus.Connected ? "Disconnect" : "Connect";
 
     public bool IsConnecting => TunnelStatus == TunnelStatus.Connecting;
-    public bool IsConnected  => TunnelStatus == TunnelStatus.Connected;
+    public bool IsConnected => TunnelStatus == TunnelStatus.Connected;
 
     // ------------------------------------------------------------------ derived
 
@@ -140,23 +140,23 @@ public sealed partial class MainViewModel : ObservableObject
 
     private void ApplyConfig(TunnelConfig c)
     {
-        Host           = c.Host;
-        SshPort        = c.SshPort;
-        Username       = c.Username;
+        Host = c.Host;
+        SshPort = c.SshPort;
+        Username = c.Username;
         LocalSocksPort = c.LocalSocksPort;
-        AuthMode       = c.AuthMode;
-        KeyFilePath    = c.KeyFilePath;
+        AuthMode = c.AuthMode;
+        KeyFilePath = c.KeyFilePath;
         StartMinimised = c.StartMinimised;
     }
 
     private TunnelConfig BuildConfig() => new()
     {
-        Host           = Host,
-        SshPort        = SshPort,
-        Username       = Username,
+        Host = Host,
+        SshPort = SshPort,
+        Username = Username,
         LocalSocksPort = LocalSocksPort,
-        AuthMode       = AuthMode,
-        KeyFilePath    = KeyFilePath,
+        AuthMode = AuthMode,
+        KeyFilePath = KeyFilePath,
         StartMinimised = StartMinimised
     };
 

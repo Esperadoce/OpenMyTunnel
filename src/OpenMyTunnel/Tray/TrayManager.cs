@@ -13,20 +13,20 @@ namespace OpenMyTunnel.Tray;
 
 public sealed class TrayManager : IDisposable
 {
-    private readonly TrayIcon      _icon;
+    private readonly TrayIcon _icon;
     private readonly MainViewModel _vm;
-    private readonly MainWindow    _window;
+    private readonly MainWindow _window;
 
     public TrayManager(MainViewModel vm, MainWindow window)
     {
-        _vm     = vm;
+        _vm = vm;
         _window = window;
 
         _icon = new TrayIcon
         {
             ToolTipText = "OpenMyTunnel - Disconnected",
-            Icon        = BuildIcon(Color.Parse("#6B7280")),
-            Menu        = BuildMenu()
+            Icon = BuildIcon(Color.Parse("#6B7280")),
+            Menu = BuildMenu()
         };
 
         _icon.Clicked += (_, _) => ShowWindow();
@@ -38,7 +38,7 @@ public sealed class TrayManager : IDisposable
         };
 
         // Register with Avalonia so the icon appears in the tray.
-        TrayIcon.SetIcons(Application.Current!, new TrayIcons { _icon });
+        TrayIcon.SetIcons(Application.Current!, [_icon]);
     }
 
     // ------------------------------------------------------------------ private
@@ -49,7 +49,7 @@ public sealed class TrayManager : IDisposable
 
         menu.Items.Add(new NativeMenuItem
         {
-            Header  = "Open",
+            Header = "Open",
             Command = new RelayCommand(ShowWindow)
         });
 
@@ -57,13 +57,13 @@ public sealed class TrayManager : IDisposable
 
         menu.Items.Add(new NativeMenuItem
         {
-            Header  = "Connect",
+            Header = "Connect",
             Command = _vm.ConnectCommand
         });
 
         menu.Items.Add(new NativeMenuItem
         {
-            Header  = "Disconnect",
+            Header = "Disconnect",
             Command = _vm.DisconnectCommand
         });
 
@@ -71,7 +71,7 @@ public sealed class TrayManager : IDisposable
 
         menu.Items.Add(new NativeMenuItem
         {
-            Header  = "Exit",
+            Header = "Exit",
             Command = new RelayCommand(Exit)
         });
 
@@ -96,13 +96,13 @@ public sealed class TrayManager : IDisposable
         var color = _vm.TunnelStatus switch
         {
             TunnelStatus.Disconnected => Color.Parse("#6B7280"),
-            TunnelStatus.Connecting   => Color.Parse("#F59E0B"),
-            TunnelStatus.Connected    => Color.Parse("#10B981"),
-            TunnelStatus.Error        => Color.Parse("#EF4444"),
-            _                         => Color.Parse("#6B7280")
+            TunnelStatus.Connecting => Color.Parse("#F59E0B"),
+            TunnelStatus.Connected => Color.Parse("#10B981"),
+            TunnelStatus.Error => Color.Parse("#EF4444"),
+            _ => Color.Parse("#6B7280")
         };
 
-        _icon.Icon        = BuildIcon(color);
+        _icon.Icon = BuildIcon(color);
         _icon.ToolTipText = $"OpenMyTunnel - {_vm.StatusText}";
     }
 
@@ -124,29 +124,29 @@ public sealed class TrayManager : IDisposable
             float cx = size * 0.5f, cy = size * 0.5f, r = size * 0.42f;
 
             // Premultiply the alpha channel.
-            byte a  = fill.A;
+            byte a = fill.A;
             byte pr = (byte)(fill.R * a / 255);
             byte pg = (byte)(fill.G * a / 255);
             byte pb = (byte)(fill.B * a / 255);
 
             for (int y = 0; y < size; y++)
-            for (int x = 0; x < size; x++)
-            {
-                float dx = x + 0.5f - cx, dy = y + 0.5f - cy;
-                int   i  = y * locked.RowBytes + x * 4;
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = x + 0.5f - cx, dy = y + 0.5f - cy;
+                    int i = y * locked.RowBytes + x * 4;
 
-                if (dx * dx + dy * dy <= r * r)
-                {
-                    ptr[i]     = pb; // B
-                    ptr[i + 1] = pg; // G
-                    ptr[i + 2] = pr; // R
-                    ptr[i + 3] = a;  // A
+                    if (dx * dx + dy * dy <= r * r)
+                    {
+                        ptr[i] = pb; // B
+                        ptr[i + 1] = pg; // G
+                        ptr[i + 2] = pr; // R
+                        ptr[i + 3] = a;  // A
+                    }
+                    else
+                    {
+                        ptr[i] = ptr[i + 1] = ptr[i + 2] = ptr[i + 3] = 0;
+                    }
                 }
-                else
-                {
-                    ptr[i] = ptr[i + 1] = ptr[i + 2] = ptr[i + 3] = 0;
-                }
-            }
         }
 
         return new WindowIcon(bmp);

@@ -23,7 +23,7 @@ public partial class App : Application
             // Keep the app alive when the window is closed (tray-only mode).
             desktop.ShutdownMode = Avalonia.Controls.ShutdownMode.OnExplicitShutdown;
 
-            var vm     = new MainViewModel();
+            var vm = new MainViewModel();
             var window = new MainWindow { DataContext = vm };
 
             _tray = new TrayManager(vm, window);

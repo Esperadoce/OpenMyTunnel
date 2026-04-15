@@ -26,7 +26,7 @@ public partial class MainWindow : Window
     {
         var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title         = "Select SSH Private Key",
+            Title = "Select SSH Private Key",
             AllowMultiple = false
         });
 
