@@ -23,17 +23,22 @@ public partial class TrayNotification : Window
     {
         if (OperatingSystem.IsLinux())
         {
-            TryProcess("notify-send",
-                "-a", "OpenMyTunnel",
-                "-t", "4000",
-                "OpenMyTunnel",
-                "Running in the system tray");
+            // Try the standard freedesktop notification daemon first.
+            // Falls back to the Avalonia toast if notify-send is not installed
+            // (works on X11; on Wayland the compositor decides placement).
+            if (!TryProcess("notify-send", "-a", "OpenMyTunnel", "-t", "4000",
+                            "OpenMyTunnel", "Running in the system tray"))
+            {
+                ShowWindowsToast(TimeSpan.FromSeconds(4), onClicked);
+            }
         }
         else if (OperatingSystem.IsMacOS())
         {
-            TryProcess("osascript",
-                "-e",
-                "display notification \"Running in the system tray\" with title \"OpenMyTunnel\"");
+            if (!TryProcess("osascript", "-e",
+                            "display notification \"Running in the system tray\" with title \"OpenMyTunnel\""))
+            {
+                ShowWindowsToast(TimeSpan.FromSeconds(4), onClicked);
+            }
         }
         else
         {
@@ -74,7 +79,8 @@ public partial class TrayNotification : Window
 
     // ------------------------------------------------------------------ helpers
 
-    private static void TryProcess(string exe, params string[] args)
+    // Returns true if the process launched successfully, false if the tool is not available.
+    private static bool TryProcess(string exe, params string[] args)
     {
         try
         {
@@ -85,7 +91,11 @@ public partial class TrayNotification : Window
             };
             foreach (var a in args) psi.ArgumentList.Add(a);
             Process.Start(psi);
+            return true;
         }
-        catch { /* tool not available -- silently skip */ }
+        catch
+        {
+            return false;
+        }
     }
 }
