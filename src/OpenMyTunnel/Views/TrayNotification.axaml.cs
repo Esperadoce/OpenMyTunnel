@@ -8,7 +8,7 @@ namespace OpenMyTunnel.Views;
 
 public partial class TrayNotification : Window
 {
-    private TrayNotification()
+    public TrayNotification()
     {
         InitializeComponent();
     }
