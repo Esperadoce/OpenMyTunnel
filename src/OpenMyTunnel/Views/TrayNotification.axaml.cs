@@ -1,5 +1,7 @@
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Threading;
 
 namespace OpenMyTunnel.Views;
@@ -11,10 +13,45 @@ public partial class TrayNotification : Window
         InitializeComponent();
     }
 
-    // Shows the toast in the bottom-right corner and auto-closes after displayFor.
-    public static void Show(TimeSpan displayFor)
+    // ------------------------------------------------------------------ public API
+
+    /// <summary>
+    /// Shows an appropriate startup notification on every platform.
+    /// onClicked is invoked when the user clicks the toast (Windows only).
+    /// </summary>
+    public static void ShowTrayStartup(Action? onClicked = null)
+    {
+        if (OperatingSystem.IsLinux())
+        {
+            TryProcess("notify-send",
+                "-a", "OpenMyTunnel",
+                "-t", "4000",
+                "OpenMyTunnel",
+                "Running in the system tray");
+        }
+        else if (OperatingSystem.IsMacOS())
+        {
+            TryProcess("osascript",
+                "-e",
+                "display notification \"Running in the system tray\" with title \"OpenMyTunnel\"");
+        }
+        else
+        {
+            ShowWindowsToast(TimeSpan.FromSeconds(4), onClicked);
+        }
+    }
+
+    // ------------------------------------------------------------------ Windows toast
+
+    private static void ShowWindowsToast(TimeSpan displayFor, Action? onClicked)
     {
         var toast = new TrayNotification();
+
+        toast.PointerPressed += (_, _) =>
+        {
+            toast.Close();
+            onClicked?.Invoke();
+        };
 
         toast.Opened += (_, _) => PositionBottomRight(toast);
         toast.Show();
@@ -33,5 +70,22 @@ public partial class TrayNotification : Window
         w.Position = new PixelPoint(
             wa.Right  - (int)(280 * screen.Scaling) - 16,
             wa.Bottom - (int)( 68 * screen.Scaling) - 16);
+    }
+
+    // ------------------------------------------------------------------ helpers
+
+    private static void TryProcess(string exe, params string[] args)
+    {
+        try
+        {
+            var psi = new ProcessStartInfo(exe)
+            {
+                UseShellExecute = false,
+                CreateNoWindow  = true
+            };
+            foreach (var a in args) psi.ArgumentList.Add(a);
+            Process.Start(psi);
+        }
+        catch { /* tool not available -- silently skip */ }
     }
 }

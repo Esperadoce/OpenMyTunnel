@@ -32,7 +32,11 @@ public partial class App : Application
             {
                 // Do not assign MainWindow so the window stays hidden on start.
                 desktop.MainWindow = null;
-                TrayNotification.Show(TimeSpan.FromSeconds(4));
+                TrayNotification.ShowTrayStartup(onClicked: () =>
+                {
+                    window.Show();
+                    window.Activate();
+                });
             }
             else
             {
