@@ -10,6 +10,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        Icon = AppIcon.Build();
 
         // Hide to tray instead of closing the application.
         Closing += (_, e) =>
