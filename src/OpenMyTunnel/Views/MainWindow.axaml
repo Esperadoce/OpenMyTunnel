@@ -76,6 +76,23 @@
             <Setter Property="Opacity"    Value="0.6" />
         </Style>
 
+        <!-- Danger (disconnect) button -->
+        <Style Selector="Button.danger">
+            <Setter Property="Background"  Value="#DC2626" />
+            <Setter Property="Foreground"  Value="White" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding"     Value="0,9" />
+            <Setter Property="FontWeight"  Value="SemiBold" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.danger:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#B91C1C" />
+        </Style>
+        <Style Selector="Button.danger:disabled /template/ ContentPresenter">
+            <Setter Property="Background" Value="#7F1D1D" />
+            <Setter Property="Opacity"    Value="0.6" />
+        </Style>
+
         <!-- Secondary (minimize) button -->
         <Style Selector="Button.secondary">
             <Setter Property="Background"   Value="#2A2A3E" />
@@ -368,11 +385,22 @@
 
             <!-- ACTIONS -->
             <Grid ColumnDefinitions="*,10,Auto">
+
+                <!-- Connect (shown when not connected) -->
                 <Button Grid.Column="0"
                         Classes="primary"
-                        Content="{Binding ConnectButtonText}"
+                        Content="Connect"
                         Command="{Binding ConnectCommand}"
                         IsEnabled="{Binding !IsConnecting}"
+                        IsVisible="{Binding !IsConnected}"
+                        HorizontalAlignment="Stretch" />
+
+                <!-- Disconnect (shown when connected) -->
+                <Button Grid.Column="0"
+                        Classes="danger"
+                        Content="Disconnect"
+                        Command="{Binding ConnectCommand}"
+                        IsVisible="{Binding IsConnected}"
                         HorizontalAlignment="Stretch" />
 
                 <Button Grid.Column="2"

@@ -56,6 +56,7 @@ public sealed partial class MainViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(StatusBrush))]
     [NotifyPropertyChangedFor(nameof(ConnectButtonText))]
     [NotifyPropertyChangedFor(nameof(IsConnecting))]
+    [NotifyPropertyChangedFor(nameof(IsConnected))]
     [NotifyCanExecuteChangedFor(nameof(DisconnectCommand))]
     private TunnelStatus _tunnelStatus = TunnelStatus.Disconnected;
 
@@ -81,6 +82,7 @@ public sealed partial class MainViewModel : ObservableObject
         TunnelStatus == TunnelStatus.Connected ? "Disconnect" : "Connect";
 
     public bool IsConnecting => TunnelStatus == TunnelStatus.Connecting;
+    public bool IsConnected  => TunnelStatus == TunnelStatus.Connected;
 
     // ------------------------------------------------------------------ derived
 
