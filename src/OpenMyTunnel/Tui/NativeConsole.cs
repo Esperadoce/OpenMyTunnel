@@ -10,7 +10,14 @@ internal static partial class NativeConsole
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool AllocConsole();
 
-    // Opens a dedicated console window for TUI mode (WinExe has no console by default).
+    // Opens a dedicated console window for TUI mode (WinExe has no console by default)
+    // and re-opens the standard streams so Console.In/Out/Error route to the new window.
     [SupportedOSPlatform("windows")]
-    public static void Alloc() => AllocConsole();
+    public static void Alloc()
+    {
+        AllocConsole();
+        Console.SetOut(new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true });
+        Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        Console.SetError(new StreamWriter(Console.OpenStandardError()) { AutoFlush = true });
+    }
 }

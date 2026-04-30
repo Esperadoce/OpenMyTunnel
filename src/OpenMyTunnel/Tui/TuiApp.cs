@@ -10,9 +10,21 @@ internal static class TuiApp
 {
     public static void Run()
     {
-        var app = Application.Create();
-        app.Init();
-        RunApp(app);
+        try
+        {
+            var app = Application.Create();
+            app.Init();
+            RunApp(app);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine();
+            Console.WriteLine("TUI error: " + ex.Message);
+            Console.WriteLine(ex.StackTrace);
+            Console.WriteLine();
+            Console.Write("Press any key to exit...");
+            Console.ReadKey(intercept: true);
+        }
     }
 
     private static void RunApp(IApplication app)
