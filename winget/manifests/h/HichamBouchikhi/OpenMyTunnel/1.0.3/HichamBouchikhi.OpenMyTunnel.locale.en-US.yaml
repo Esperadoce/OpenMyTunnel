@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.9.0.schema.json
+
+PackageIdentifier: HichamBouchikhi.OpenMyTunnel
+PackageVersion: 1.0.3
+PackageLocale: en-US
+Publisher: Hicham Bouchikhi
+PublisherUrl: https://github.com/hicham-bouchikhi
+PublisherSupportUrl: https://github.com/hicham-bouchikhi/OpenMyTunnel/issues
+PackageName: OpenMyTunnel
+PackageUrl: https://github.com/hicham-bouchikhi/OpenMyTunnel
+License: MIT
+LicenseUrl: https://github.com/hicham-bouchikhi/OpenMyTunnel/blob/master/LICENSE
+ShortDescription: Lightweight SSH SOCKS5 tunnel manager with system tray support
+Description: |-
+  A lightweight SSH SOCKS5 tunnel manager. Configure your server once, click Connect,
+  and the tunnel runs quietly in the system tray. Equivalent to running
+  ssh -D 1080 -N user@host -p 22. Supports password and SSH key authentication
+  (including key + passphrase), colour-coded tray icon, and start-minimised mode.
+  AOT-compiled — no .NET runtime required.
+Tags:
+  - ssh
+  - tunnel
+  - socks5
+  - proxy
+  - network
+  - tray
+ManifestType: defaultLocale
+ManifestVersion: 1.9.0

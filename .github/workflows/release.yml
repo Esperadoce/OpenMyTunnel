@@ -94,7 +94,47 @@ jobs:
           TAG: ${{ github.ref_name }}
         run: ${{ matrix.package_cmd }}
 
+      - name: Compute SHA256 (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          $file = Get-Item "OpenMyTunnel-$env:TAG-win-x64.zip"
+          $hash = (Get-FileHash $file -Algorithm SHA256).Hash
+          Write-Output "SHA256 ($($file.Name)): $hash"
+          "WIN_X64_SHA256=$hash" >> $env:GITHUB_ENV
+
       - name: Upload artifact to release
         run: gh release upload "${{ github.ref_name }}" ${{ matrix.artifact_glob }} --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Submit (or update) the winget package after every Windows release.
+  # Requires a repo secret WINGET_SUBMIT_TOKEN: a GitHub PAT with public_repo scope,
+  # used by wingetcreate to fork microsoft/winget-pkgs and open the update PR.
+  #
+  # First-time submission: the package must be accepted into winget-pkgs manually
+  # (see winget/README.md). After that, this job keeps future versions up to date
+  # automatically.
+  winget-submit:
+    name: Submit to winget
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - name: Download wingetcreate
+        run: iwr https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
+
+      - name: Submit / update winget manifest
+        shell: pwsh
+        env:
+          WINGET_SUBMIT_TOKEN: ${{ secrets.WINGET_SUBMIT_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          $version = $env:TAG.TrimStart('v')
+          $url = "https://github.com/${{ github.repository }}/releases/download/$env:TAG/OpenMyTunnel-$env:TAG-win-x64.zip"
+          .\wingetcreate.exe update HichamBouchikhi.OpenMyTunnel `
+            --version $version `
+            --urls $url `
+            --submit `
+            --token $env:WINGET_SUBMIT_TOKEN
