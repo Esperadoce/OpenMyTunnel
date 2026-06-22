@@ -107,7 +107,7 @@ public sealed partial class MainViewModel : ObservableObject
     public MainViewModel()
     {
         _tunnel = new SshTunnelService();
-        _tunnel.StatusChanged += (_, s) => Avalonia.Threading.Dispatcher.UIThread.Post(() => TunnelStatus = s);
+        _tunnel.StatusChanged += (_, s) => Avalonia.Threading.Dispatcher.UIThread.Post(() => OnStatusChanged(s));
         _tunnel.ErrorOccurred += (_, msg) => Avalonia.Threading.Dispatcher.UIThread.Post(() => OnError(msg));
 
         var config = ConfigService.Load();
@@ -119,6 +119,7 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanConnect))]
     private async Task ConnectAsync()
     {
+        ErrorMessage = string.Empty;
         var config = BuildConfig();
         ConfigService.Save(config);
         await _tunnel.ConnectAsync(config, Password, Passphrase);
@@ -159,6 +160,14 @@ public sealed partial class MainViewModel : ObservableObject
         KeyFilePath = KeyFilePath,
         StartMinimised = StartMinimised
     };
+
+    private void OnStatusChanged(TunnelStatus status)
+    {
+        TunnelStatus = status;
+
+        if (status is TunnelStatus.Connected or TunnelStatus.Disconnected)
+            ErrorMessage = string.Empty;
+    }
 
     private void OnError(string message)
     {
