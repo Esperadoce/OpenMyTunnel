@@ -45,7 +45,7 @@ public sealed class SshTunnelService : IDisposable
 
                 var authMethods = config.AuthMode == AuthMode.PrivateKey
                     ? BuildKeyAuthMethods(config, passphrase, password)
-                    : new AuthenticationMethod[] { BuildPasswordAuth(config, password) };
+                    : [BuildPasswordAuth(config, password)];
 
                 var connInfo = new ConnectionInfo(
                     config.Host,
