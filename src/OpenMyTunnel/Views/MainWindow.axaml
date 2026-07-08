@@ -206,7 +206,7 @@
 
                             <TextBox Grid.Row="2" Grid.Column="0"
                                      Text="{Binding Host}"
-                                     Watermark="192.168.1.1" />
+                                     PlaceholderText="192.168.1.1" />
 
                             <NumericUpDown Grid.Row="2" Grid.Column="2"
                                            Minimum="1" Maximum="65535"
@@ -219,7 +219,7 @@
 
                             <TextBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3"
                                      Text="{Binding Username}"
-                                     Watermark="esperadoce" />
+                                     PlaceholderText="esperadoce" />
                         </Grid>
                     </StackPanel>
                 </Border>
@@ -243,7 +243,7 @@
                                 <TextBox Grid.Column="0"
                                          PasswordChar="*"
                                          Text="{Binding Password, Mode=TwoWay}"
-                                         Watermark="SSH password" />
+                                         PlaceholderText="SSH password" />
                                 <ToggleButton Grid.Column="2"
                                               x:Name="RevealToggle"
                                               Padding="8,6"
@@ -314,12 +314,12 @@
                             <TextBlock Classes="field-label" Text="Key Passphrase (optional)" />
                             <TextBox PasswordChar="*"
                                      Text="{Binding Passphrase, Mode=TwoWay}"
-                                     Watermark="Leave blank if key is not encrypted" />
+                                     PlaceholderText="Leave blank if key is not encrypted" />
 
                             <TextBlock Classes="field-label" Text="Server Password (optional)" />
                             <TextBox PasswordChar="*"
                                      Text="{Binding Password, Mode=TwoWay}"
-                                     Watermark="Required only if server demands key + password" />
+                                     PlaceholderText="Required only if server demands key + password" />
                         </StackPanel>
                     </StackPanel>
                 </Border>

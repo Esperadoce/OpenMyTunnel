@@ -10,6 +10,7 @@ namespace OpenMyTunnel;
 public partial class App : Application
 {
     private TrayManager? _tray;
+    private MainWindow? _window;
 
     public override void Initialize()
     {
@@ -24,9 +25,9 @@ public partial class App : Application
             desktop.ShutdownMode = Avalonia.Controls.ShutdownMode.OnExplicitShutdown;
 
             var vm = new MainViewModel();
-            var window = new MainWindow { DataContext = vm };
+            _window = new MainWindow { DataContext = vm };
 
-            _tray = new TrayManager(vm, window);
+            _tray = new TrayManager(vm, _window);
 
             if (vm.StartMinimised)
             {
@@ -34,17 +35,24 @@ public partial class App : Application
                 desktop.MainWindow = null;
                 TrayNotification.ShowTrayStartup(onClicked: () =>
                 {
-                    window.Show();
-                    window.Activate();
+                    _window.Show();
+                    _window.Activate();
                 });
             }
             else
             {
-                desktop.MainWindow = window;
-                window.Show();
+                desktop.MainWindow = _window;
+                _window.Show();
             }
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    // Called from the background show-window listener thread in Program.cs.
+    internal void ShowMainWindow()
+    {
+        _window?.Show();
+        _window?.Activate();
     }
 }
